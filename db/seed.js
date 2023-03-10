@@ -5,6 +5,8 @@ const { client } = require("./index");
 // db function imports
 const { createUser } = require("./users")
 const { createMedia } = require("./media");
+const { createCategory } = require("./categories");
+const { addCategoryToMedia } = require("./media_categories");
 
 
 /**
@@ -83,7 +85,7 @@ async function createInitialUsers() {
       ];
       const users = await Promise.all(usersToCreate.map(createUser));
       console.log("users:", users);
-      console.log("...👥🧑‍🤝‍🧑 USERS CREATED!");
+      console.log("...👥🌏 USERS CREATED!");
   } catch (error) {
       console.error("Error creating users");
       throw error;
@@ -134,7 +136,7 @@ async function createInitialMedia() {
       ];
       const media = await Promise.all(mediaToCreate.map(createMedia));
       console.log("media:", media);
-      console.log("...🎞️🍿 MEDIA CREATED!");
+      console.log("... 🍿🎞️ MEDIA CREATED!");
   } catch (error) {
       console.error("Error creating media");
       throw error;
@@ -149,8 +151,43 @@ async function createInitialMedia() {
 async function createInitialCategories() {
   console.log("\n📋✍️ CREATING INITIAL CATEGORIES...");
   try {
-    // TODO
-      console.log("📃🗂️ ...CATEGORIES CREATED!");
+    const categoriesToCreate = [
+      { name: "movie" },
+      { name: "show" },
+      { name: "animation" },
+      { name: "madi's favs" },
+      { name: "drew's favs" },
+    ];
+
+    const categories = await Promise.all(categoriesToCreate.map(createCategory));
+    console.log("categories:", categories);
+    console.log("📃🗂️ ...CATEGORIES CREATED!");
+  } catch (error) {
+      console.error("Error creating users");
+      throw error;
+  }
+}
+
+
+/**
+ ** Create Initial Media Categories
+ * Attach initial categories to media
+ */
+async function createInitialMediaCategories() {
+  console.log("\n👇⭐ CREATING INITIAL MEDIA CATEGORIES...");
+  try {
+    // TODO: not hard code these ids
+    const mediaCategoriesToCreate = [
+      { mediaId:  20, categoryId: 2 },
+      { mediaId:  20, categoryId: 4 },
+      { mediaId:  19, categoryId: 4 },
+      { mediaId:  19, categoryId: 2 },
+
+    ];
+
+    const mediaCategories = await Promise.all(mediaCategoriesToCreate.map(addCategoryToMedia));
+    console.log("media categories:", mediaCategories);
+    console.log("✅🎯 ... MEDIA CATEGORIES CREATED!");
   } catch (error) {
       console.error("Error creating users");
       throw error;
@@ -160,11 +197,13 @@ async function createInitialCategories() {
 
 async function rebuildDB(){
   client.connect();
+
   await dropTables();
   await createTables();
   await createInitialUsers();
   await createInitialMedia();
   await createInitialCategories();
+  await createInitialMediaCategories();
 
   client.end();
 }
