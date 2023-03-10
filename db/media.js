@@ -32,7 +32,7 @@ async function createMedia({ title, description, image }) {
  ** Update Media
  * Updates a piece of media in the database media table.
  * @param { number } mediaId the id for the media to be updated
- * @param { array } fields a list of updated field values for the media object
+ * @param { object } fields an object of new field values to update the media object with
  * @returns { object } the newly updated media
  * TODO: is there a more secure way to do this query?
  */
