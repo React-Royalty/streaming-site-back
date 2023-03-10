@@ -1,0 +1,36 @@
+{
+  "name": "back-streaming-site",
+  "version": "1.0.0",
+  "description": "streaming site back end",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js",
+    "seed": "nodemon ./db/seed.js",
+    "dev-seed-start": "nodemon ./db/seed.js && nodemon index.js",
+    "seed-start": "node ./db/seed.js && node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/React-Royalty/streaming-site-back.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/React-Royalty/streaming-site-back/issues"
+  },
+  "homepage": "https://github.com/React-Royalty/streaming-site-back#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.10.0",
+    "pg": "^8.8.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
