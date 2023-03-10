@@ -4,12 +4,10 @@ const { client } = require("./index");
 
 // db function imports
 const { createUser } = require("./users");
-const { createMedia } = require("./media");
+const { createMedia, getMediaByTitle } = require("./media");
 const { createCategory } = require("./categories");
 const { addCategoryToMedia } = require("./media_categories");
 // db testing function imports
-const { updateMedia, getAllMedia, getMediaById, getMediaByTitle } = require("./media");
-const { getUser, getUserById, getUserByUsername } = require("./users");
 const { testDB } = require("./TESTS");
 
 
@@ -186,7 +184,7 @@ async function createInitialMediaCategories() {
   try {
 
     // console.log("get by title: ", await getMediaByTitle("Killing Eve"));
-    // console.log("ID: ", await getMediaByTitle("Killing Eve"));
+    // console.log("ID: ", await getMediaByTitle("Killing Eve").id);
     // mediaCategoriesToCreate = [ // TODO: MAKE WORK
     //   { mediaId: await getMediaByTitle("Killing Eve").id, categoryId: 2 },
     //   { mediaId: await getMediaByTitle("Killing Eve").id, categoryId: 4 },
