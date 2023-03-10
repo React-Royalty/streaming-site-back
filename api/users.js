@@ -8,34 +8,10 @@ const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = process.env;
 
 // function imports
-const { createUser, getUserByUsername, getUser } = require("../db/users");
+const { getUserByUsername, createUser, getUser } = require("../db/users");
 
 
 // HTTP methods
-
-/**
-** GET /api/users/me
-* Sends back the logged-in user's data if a valid token is supplied in the header
-*/
-usersRouter.get("/me", async (req, res, next) => {
-  try {
-    if (!req.user){
-      next({
-        name: "InvalidCredentialsError",
-        message:"Nobody is logged in"
-      })
-    } else {
-      res.send({ 
-        success: true,
-        message: req.user.username + " is logged in",
-        user: req.user
-      });
-    }
-  } catch ({name,message}){
-    next({name,message})
-  }
-});
-
 
 /**
 ** POST /api/users/register
@@ -61,7 +37,7 @@ usersRouter.post("/register", async (req, res, next) => {
         name: "ShortUsernameError",
         message: "Username is too short, must be at least 3 characters"
       });
-    } else if (password.length < 8) { // require all passwords to be at least 8 characters long
+    } else if ( password.length < 8 ) { // require all passwords to be at least 8 characters long
       next({
         name: "ShortPasswordError",
         message: "Password is too short, must be at least 8 characters"
@@ -69,7 +45,7 @@ usersRouter.post("/register", async (req, res, next) => {
     } else {
       const _user = await getUserByUsername(username);
 
-      if (_user) {    // require unique username
+      if ( _user ) {    // require unique username
         next ({
           name:"UserExistsError",
           message:"That username is already taken"
@@ -84,8 +60,8 @@ usersRouter.post("/register", async (req, res, next) => {
         });
       }
     }
-  } catch ({name, message}) {
-      next ({name, message});
+  } catch ({ name, message }) {
+      next ({ name, message });
   }
 });
 
@@ -107,13 +83,13 @@ usersRouter.post("/login", async (req, res, next) => {
     next({
       name: "MissingCredentialsError",
       message: "You must supply a password"
-    })
+    });
   }
 
   try { // verify that plaintext login password matches the saved hashed password before returning a json web token
     const user = await getUser({ username, password });
 
-    if (user) { 
+    if ( user ) { 
       const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn:"1w" });   // keep the id and username in the token
       res.send({
         success: true,
@@ -126,8 +102,32 @@ usersRouter.post("/login", async (req, res, next) => {
         message:"Username or password is incorrect"
       });
     }
-  } catch ({name, message}) {
-    next ({name, message});
+  } catch ({ name, message }) {
+    next ({ name, message });
+  }
+});
+
+
+/**
+** GET /api/users/me
+* Sends back the logged-in user's data if a valid token is supplied in the header
+*/
+usersRouter.get("/me", async (req, res, next) => {
+  try {
+    if ( !req.user ) {
+      next({
+        name: "InvalidCredentialsError",
+        message:"Nobody is logged in"
+      });
+    } else {
+      res.send({ 
+        success: true,
+        message: req.user.username + " is logged in",
+        user: req.user
+      });
+    }
+  } catch ({ name, message }) {
+    next({ name, message });
   }
 });
 
