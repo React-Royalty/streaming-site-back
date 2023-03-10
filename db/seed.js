@@ -73,6 +73,7 @@ async function dropTables() {
 /**
  ** Create Initial Users
  * Creates initial users for the users table in the database.
+ * @see /db/users/createUser 
  */
 async function createInitialUsers() {
   console.log("\n👤🧍 CREATING INITIAL USERS...");
@@ -96,6 +97,7 @@ async function createInitialUsers() {
 /**
  ** Create Initial Media
  * Creates initial users for the users table in the database.
+ * @see /db/media/createMedia 
  */
 async function createInitialMedia() {
   console.log("\n🎬🎥 CREATING INITIAL MEDIA...");
@@ -146,6 +148,7 @@ async function createInitialMedia() {
 /**
  ** Create Initial Categories
  * Creates initial categories for categories table in the database.
+ * @see /db/categories/createCategory 
  */
 async function createInitialCategories() {
   console.log("\n📋✍️ CREATING INITIAL CATEGORIES...");
@@ -171,6 +174,7 @@ async function createInitialCategories() {
 /**
  ** Create Initial Media Categories
  * Attach initial categories to media
+ * @see /db/media_categories/addCategoryToMedia 
  */
 async function createInitialMediaCategories() {
   console.log("\n👇⭐ CREATING INITIAL MEDIA CATEGORIES...");
