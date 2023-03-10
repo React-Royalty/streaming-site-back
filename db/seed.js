@@ -107,9 +107,9 @@ async function createInitialMedia() {
       { title: "Midsommar", description: "do you feel held by him? does he feel like home to you?", image: "https://m.media-amazon.com/images/M/MV5BMzQxNzQzOTQwM15BMl5BanBnXkFtZTgwMDQ2NTcwODM@._V1_.jpg" },
       { title: "Megamind", description: "presentation!", image: "https://cdn.shopify.com/s/files/1/0445/8600/8737/products/0fa342e3-605a-4b5d-b4c3-c52d4d30efcb_7b291b9e-eb84-4039-bfc8-c5fd29198b4a.jpg?v=1671065453" },
       { title: "Portrait of a Lady on Fire", description: "do all lovers feel they're inventing something?", image: "https://cdn.posteritati.com/posters/000/000/064/842/portrait-of-a-lady-on-fire-md-web.jpg" },
-      { title: "Parasite", description: "eat the rich", image: "https://m.media-amazon.com/images/I/91KArYP03YL._AC_UF894,1000_QL80_.jpg" },
+      { title: "Parasite", description: "eat the rich etc", image: "https://m.media-amazon.com/images/I/91KArYP03YL._AC_UF894,1000_QL80_.jpg" },
       { title: "Spider-Man: Into the Spider-Verse", description: "you can wear the mask!", image: "https://m.media-amazon.com/images/I/71QcRDosnsL._AC_SY879_.jpg" },
-      { title: "Lady Bird", description: "oh to be a mother's daughter", image: "https://m.media-amazon.com/images/I/811IspJXndL.jpg" },
+      { title: "Lady Bird", description: "oh being a mother's daughter", image: "https://m.media-amazon.com/images/I/811IspJXndL.jpg" },
       { title: "Booksmart", description: "put your heel in my corn hole", image: "https://m.media-amazon.com/images/M/MV5BMjEzMjcxNjA2Nl5BMl5BanBnXkFtZTgwMjAxMDM2NzM@._V1_.jpg" },
       { title: "Black Swan", description: "now kiss", image: "https://i5.walmartimages.com/asr/2765ed1a-9da8-4d95-8967-bece9a8e9a04_1.9f6520582c44bc53c3d3abc2dbbd3db4.jpeg" },
       { title: "The Blair Witch Project", description: "goat", image: "https://fffmovieposters.com/wp-content/uploads/22744.jpg" },
@@ -120,18 +120,17 @@ async function createInitialMedia() {
 
 
       { title: "Stranger Things", description: "bitchin", image: "https://i.ebayimg.com/images/g/7tEAAOSwOPVijmX~/s-l1600.jpg" },
-      { title: "Grey's Anatomy", description: "he's not the sun, you are!", image: "https://flxt.tmsimg.com/assets/p9977774_b_v8_aa.jpg" },
-      { title: "Survivor", description: "You know what Jeff? I think it would be downright depressing to sit and watch green bananas turn yellow without my debaucherous little villains...", image: "https://image.tmdb.org/t/p/original/5TVfHUnY84VAVur8FNllbkgnKmQ.jpg" },
-      { title: "Killing Eve", description: "Killing Eve description", image: "https://i.etsystatic.com/31384974/r/il/4c7670/4108961290/il_570xN.4108961290_kz81.jpg" },
-      { title: "The Vampire Diaries", description: "TVD description", image: "https://m.media-amazon.com/images/I/818mT+CFptL._AC_UF894,1000_QL80_.jpg" },
-      { title: "Avatar: The Last Airbender", description: "Avatar: The Last Airbender description", image: "https://m.media-amazon.com/images/I/513ZuZQulAL._AC_UF894,1000_QL80_.jpg" },
+      { title: "Grey's Anatomy", description: "he's very dreamy, but he's not the sun, you are", image: "https://flxt.tmsimg.com/assets/p9977774_b_v8_aa.jpg" },
+      { title: "Survivor", description: "You know what Jeff? I think it would be downright depressing to sit and watch green bananas turn yellow without my debaucherous little villains... so", image: "https://image.tmdb.org/t/p/original/5TVfHUnY84VAVur8FNllbkgnKmQ.jpg" },
+      { title: "Killing Eve", description: "have you told your husband about us yet eve?", image: "https://i.etsystatic.com/31384974/r/il/4c7670/4108961290/il_570xN.4108961290_kz81.jpg" },
+      { title: "The Vampire Diaries", description: "team katherine", image: "https://m.media-amazon.com/images/I/818mT+CFptL._AC_UF894,1000_QL80_.jpg" },
       { title: "WandaVision", description: "evan peters quicksilver?!?!", image: "https://m.media-amazon.com/images/I/91uThdajb1L._AC_SY879_.jpg" },
       { title: "Derry Girls", description: "what's the craic", image: "https://image.tmdb.org/t/p/original/iOAiJF2Q9vX8x8n2GBP3E6sCE8e.jpg" },
       { title: "The White Lotus", description: "mike white king goliath", image: "https://posterspy.com/wp-content/uploads/2023/01/White-Lotus-2-Portrait-V2.jpg" },
       { title: "Santa Clarita Diet", description: "gone too soon", image: "https://m.media-amazon.com/images/M/MV5BNTIwMDkzNTMwMF5BMl5BanBnXkFtZTgwNDA4MjI2NzM@._V1_.jpg" },
       { title: "Fleabag", description: "claire it's french!", image: "https://m.media-amazon.com/images/I/51fd7hCV6AL._AC_UF894,1000_QL80_.jpg" },
 
-      { title: "", description: "", image: "" },
+      // { title: "", description: "", image: "" },
 
       ];
       const media = await Promise.all(mediaToCreate.map(createMedia));
