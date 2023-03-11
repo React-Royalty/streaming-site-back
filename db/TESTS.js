@@ -51,8 +51,8 @@ async function testDB() {
   // console.log(await createCategory({ name: "Horror" }));
   // console.log("getAllCategories() ->");
   // console.log(await getAllCategories());
-  // console.log("attachCategoriesToMedia() ->");
-  // console.log(await attachCategoriesToMedia());
+  // console.log("attachCategoriesToMedia(all media) ->");
+  // console.log(await attachCategoriesToMedia(await getAllMediaWithoutCategories()));
 
 
   // console.log("\n🦜 🐲 TESTING MEDIA CATEGORIES 🦜 🐲\n");
