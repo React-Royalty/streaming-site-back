@@ -157,11 +157,10 @@ async function createInitialCategories() {
   console.log("\n📋✍️ CREATING INITIAL CATEGORIES...");
   try {
     const categoriesToCreate = [
-      { name: "Movie" },
-      { name: "Show" },
-      { name: "Animation" },
-      { name: "Madi's Favorites" },
-      { name: "Drew's Favorites" },
+      "Movie",
+      "TV Show",
+      "Animation",
+      "Madi's Favorites"
     ];
 
     const categories = await Promise.all(categoriesToCreate.map(createCategory));
@@ -223,7 +222,7 @@ async function rebuildDB(){
   await createInitialMediaCategories();
   console.log("\n\n------------------------ 🔨 🪛 🔧 FINISHED REBUILDING DATABASE 🔨 🪛 🔧 -------------------------\n\n");
   
-  // await testDB();
+  await testDB();
   
   client.end();
 }

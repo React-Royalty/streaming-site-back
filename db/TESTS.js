@@ -28,22 +28,22 @@ async function testDB() {
   console.log("\n📺 🎥 TESTING MEDIA 📺 🎥\n");
   // console.log("createMedia() ->");
   // console.log(await createMedia({ title: "Hawkeye", description: "Forence and Hailee??", image: "https://m.media-amazon.com/images/I/71t8z+AA-kL.jpg" }));
-  // console.log("updateMedia(1) ->");
-  // console.log(await updateMedia(1, { title: "I'VE BEEN CHANGED!!", description: "HERE I AM", image: "https://media.wonderlandmagazine.com/uploads/2014/11/Taylor-Swift-03-2.jpg" }));
+  console.log("updateMedia(1) ->");
+  console.log(await updateMedia(1, { title: "I'VE BEEN CHANGED!!", description: "HERE I AM", image: "https://media.wonderlandmagazine.com/uploads/2014/11/Taylor-Swift-03-2.jpg" }));
   // console.log("deleteMedia(5) ->");
-  console.log(await deleteMedia(5));
+  // console.log(await deleteMedia(5));
   console.log("getAllMedia() ->");
   console.log(await getAllMedia());
   // console.log("getAllMediaWithoutCategories() ->");
   // console.log(await getAllMediaWithoutCategories());
-  console.log("getMediaById(19) ->");
-  console.log(await getMediaById(19));
-  console.log("getMediaByIdWithCategories(19) ->");
-  console.log(await getMediaByIdWithCategories(19));
+  // console.log("getMediaById(19) ->");
+  // console.log(await getMediaById(19));
+  // console.log("getMediaByIdWithCategories(19) ->");
+  // console.log(await getMediaByIdWithCategories(19));
   // console.log("getMediaByTitle(Survivor) ->");
   // console.log(await getMediaByTitle("Survivor"));
-  console.log("getMediaByCategory(2) ->");
-  console.log(await getMediaByCategory(2));
+  // console.log("getMediaByCategory(2) ->");
+  // console.log(await getMediaByCategory(2));
 
 
   // console.log("\n🤠 👽 TESTING CATEGORIES 🤠 👽\n");

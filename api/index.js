@@ -58,6 +58,13 @@ router.use("/users", usersRouter);
 const mediaRouter = require("./media");
 router.use("/media", mediaRouter);
 
+// ROUTER: /api/categories 👹🤠
+const categoriesRouter = require("./categories");
+router.use("/categories", categoriesRouter);
+
+// ROUTER: /api/media-categories 📁🗃️
+const mediaCategoriesRouter = require("./media_categories");
+router.use("/media-categories", mediaCategoriesRouter);
 
 // Error handling
 router.use((error, req, res, next) => {

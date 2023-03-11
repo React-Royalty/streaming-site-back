@@ -19,7 +19,9 @@ categoriesRouter.post("/", requireUser, async (req, res, next) => {
     const { name } = req.body;
     
     try {
-      const category = createCategory(name);
+      const category = await createCategory(name);
+      console.log("making new category ,", name);
+      console.log(category);
 
       if ( category ) {
         res.send({
@@ -38,29 +40,6 @@ categoriesRouter.post("/", requireUser, async (req, res, next) => {
     }
   })
   
-
-
-/**
- ** PATCH /api/categories
- * Update an existing category name in the categories table in database.
- * TODO: 1. Require an admin user?
-*/
-categoriesRouter.patch('/:categoryId', requireUser, async (req, res, next) => {
-  const { categoryId } = req.params;
-  const { name } = req.body;
-
-  try {
-    const updatedCategory = updateCategory(categoryId, name);
-    
-    res.send({
-      success: true,
-      message: name + " category updated",
-      category: updatedCategory
-    });
-  } catch ({ name, message }) {
-    next({ name, message });
-  }
-});
 
 
 /**

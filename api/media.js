@@ -44,15 +44,17 @@ mediaRouter.post("/", requireUser, async (req, res, next) => {
 mediaRouter.patch('/:mediaId', requireUser, async (req, res, next) => {
   const { mediaId } = req.params;
   const { title, description, image } = req.body;
+  console.log('UPDATING MEDIA')
 
-  const updateFields={};
+  const updateFields = {};
 
-  if (title) updateFields.title = natitleme;
-  if (description) updateFields.description = description;
-  if (image) updateFields.image = image;
+  if ( title ) updateFields.title = title;
+  if ( description ) updateFields.description = description;
+  if ( image ) updateFields.image = image;
 
   try {
     const updatedMedia = await updateMedia(mediaId, updateFields);
+    console.log("updatedMedia : ", updatedMedia);
 
     if (updatedMedia) {
       res.send({

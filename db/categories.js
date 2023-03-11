@@ -9,7 +9,7 @@ const { client } = require("./index");
  * @param { string } name the name of the category
  * @returns { object } the newly created category
  */
-async function createCategory({ name }) {
+async function createCategory(name) {
   try {
     const { rows: [ category ] } = await client.query(`
       INSERT INTO categories(name)
