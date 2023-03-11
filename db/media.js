@@ -1,5 +1,6 @@
 // media db functions
 
+const { attachCategoriesToMedia } = require("./categories");
 const { client } = require("./index");
 
 
@@ -59,11 +60,52 @@ async function updateMedia(mediaId, fields) {
 
 
 /**
+ ** Delete Media
+ * Deletes a piece of media from the database media table.
+ * @param { number } mediaId the id for the media to be deleted
+ * @returns { object } the recently deleted media
+ */
+async function deleteMedia(mediaId) {
+  try {
+    const { rows: [ media ] } = await client.query(`
+      DELETE FROM media 
+      WHERE id = $1 
+      RETURNING *;
+    `, [mediaId]);
+
+    return media;
+  } catch(error){
+    console.log(error);
+  }
+}
+
+
+/**
  ** Get All Media
- * Gets and returns all media from media table in database
- * @returns { array } an array of all media
+ * Gets and returns all media from media table in database, attaches media's categories
+ * @returns { array } an array of all media objects including categories array on each media
  */
 async function getAllMedia() {
+  try {
+    const { rows: media } = await client.query(`
+      SELECT *  
+      FROM media;
+    `);
+    return attachCategoriesToMedia(media);
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+
+
+/**
+ ** Get All Media Without Categories
+ * Gets and returns all media from media table in database, does not attach categories
+ * @returns { array } an array of all media
+ */
+async function getAllMediaWithoutCategories() {
   try {
     const { rows: media } = await client.query(`
       SELECT * 
@@ -98,6 +140,26 @@ async function getMediaById(id) {
 
 
 /**
+ ** Get Media By ID With Categories
+ * Gets and returns a piece of media by its ID and attaches its categories
+ * @returns { object } the media found by its ID including attached categories
+ */
+async function getMediaByIdWithCategories(id) {
+  try {
+    const { rows: [ media ] } = await client.query(`
+      SELECT * 
+      FROM media
+      WHERE id = $1;
+    `, [id]);
+
+    return attachCategoriesToMedia([media]);
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+/**
  ** Get Media By Title
  * Gets and returns a piece of media by its title
  * @returns { object } the media found by its title
@@ -118,34 +180,22 @@ async function getMediaByTitle(title) {
 
 
 /**
- ** Attach Category To Media
- * 
- * TODO: FIGURE OUT
+ ** Get Media By Category
+ * Gets and returns all media within a category
+ * @returns { object } the media found by category
  */
-async function attachCategoriesToMedia(media) {
-  // no side effects
-  const mediaToReturn = [...media];
-  const binds = media.map((_, index) => `$${index + 1}`).join(', ');
-  const mediaIds = media.map(indivMedia => indivMedia.id);
-  if ( !mediaIds?.length ) return [];
-
+async function getMediaByCategory(categoryId) {
   try {
-    // get the categories, JOIN with media_categories (so we can get a mediaId), and only those that have those media ids on the media_categories join
-    const { rows: activities } = await client.query(`
-      SELECT categories.*, media_categories.id AS "mediaCategoryId", media_categories."mediaId"
-      FROM categories 
-      JOIN media_activities ON media_activities."categoryId" = categories.id
-      WHERE media_activities."mediaId" IN (${ binds });
-    `, mediaIds);
+    const { rows: mediaIds } = await client.query(`
+      SELECT "mediaId" 
+      FROM media_categories
+      WHERE "categoryId" = $1;
+    `, [categoryId]);
 
-    // loop over the media
-    for(const indivMedia of mediaToReturn) {
-      // filter the activities to only include those that have this routineId
-      const categoriesToAdd = categories.filter(category => category.routineId === routine.id);
-      // attach the activities to each single routine
-      routine.activities = activitiesToAdd;
-    }
-    return routinesToReturn;
+    const media = await Promise.all(mediaIds.map(mediaId => getMediaById(mediaId.mediaId)));
+    
+    return attachCategoriesToMedia(media);
+
   } catch (error) {
     throw error;
   }
@@ -155,8 +205,11 @@ async function attachCategoriesToMedia(media) {
 module.exports = {
   createMedia,
   updateMedia,
+  deleteMedia,
   getAllMedia,
+  getAllMediaWithoutCategories,
   getMediaById,
+  getMediaByIdWithCategories,
   getMediaByTitle,
-  // attachCategoriesToMedia
+  getMediaByCategory
 }

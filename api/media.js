@@ -60,7 +60,7 @@ mediaRouter.patch('/:mediaId', requireUser, async (req, res, next) => {
       })
     } else {
       next ({ 
-        name: "ErrorUpdatingMedia",
+        name: "MediaUpdateError",
         message: "An error occured while attempting to update media"
       });
     }

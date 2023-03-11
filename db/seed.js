@@ -223,7 +223,7 @@ async function rebuildDB(){
   await createInitialMediaCategories();
   console.log("\n\n------------------------ 🔨 🪛 🔧 FINISHED REBUILDING DATABASE 🔨 🪛 🔧 -------------------------\n\n");
   
-  // await testDB();
+  await testDB();
   
   client.end();
 }

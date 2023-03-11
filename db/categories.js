@@ -44,8 +44,44 @@ async function getAllCategories() {
 }
 
 
+/**
+ ** Attach Categories To Media
+ * @param media the m
+ * 
+ */
+async function attachCategoriesToMedia(media) {
+  // no side effects
+  const mediaToReturn = [...media];
+  const binds = media.map((_, index) => `$${index + 1}`).join(', ');
+  const mediaIds = media.map(indivMedia => indivMedia.id);
+  if ( !mediaIds?.length ) return [];
+
+  try {
+    // get the categories, JOIN with media_categories (so we can get a mediaId), and only those that have those media ids on the media_categories join
+    const { rows: categories } = await client.query(`
+      SELECT categories.*, media_categories.id AS "mediaCategoryId", media_categories."mediaId"
+      FROM categories 
+      JOIN media_categories ON media_categories."categoryId" = categories.id
+      WHERE media_categories."mediaId" IN (${ binds });
+    `, mediaIds);
+
+    // loop over the media
+    for ( const indivMedia of mediaToReturn ) {
+      // filter the categories to only include those that have this mediaId
+      const categoriesToAdd = categories.filter(category => category.mediaId === indivMedia.id);
+      // attach the categories to each single media
+      indivMedia.categories = categoriesToAdd;
+    }
+
+    return mediaToReturn;
+  } catch (error) {
+    throw error;
+  }
+}
+
 
 module.exports = {
   createCategory,
   getAllCategories,
+  attachCategoriesToMedia
 }
