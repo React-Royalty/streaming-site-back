@@ -4,7 +4,7 @@ const express = require("express");
 const categoriesRouter = express.Router();
 
 // function imports
-const { getAllMedia, getMediaById, getMediaByTitle, createMedia } = require("../db/media");
+const { getAllCategories, createCategory } = require("../db/categories");
 const { requireUser } = require("./utils");
 
 
@@ -13,23 +13,51 @@ const { requireUser } = require("./utils");
 /**
  ** POST /api/categories
  * Creates a new category for the categories table in database.
- * TODO: 1. Require an admin user? 2. Add if / else if / else for requiring title and description?
+ * TODO: 1. Require an admin user?
 */
 categoriesRouter.post("/", requireUser, async (req, res, next) => {
+    const { name } = req.body;
+    
+    try {
+      const category = await createCategory(name);
+      console.log("making new category ,", name);
+      console.log(category);
 
+      if ( category ) {
+        res.send({
+          success: true,
+          message: "New category created",
+          category: category
+        });
+      } else {
+        next({
+          name: "NewCategoryPostError",
+          message: "A category with that name already exists"
+        });
+      }
+    } catch ({ name, message }) {
+      next({ name, message });
+    }
   })
   
 
 
 /**
- ** PATCH /api/categories
- * Update an existing category in the categories table in database.
- * TODO: 1. Require an admin user?
+ ** GET /api/categories
+ * Get and send back a list of all categories in the database
 */
-categoriesRouter.patch('/:categoryId', requireUser, async (req, res, next) => {
+categoriesRouter.get('/', async (req, res, next) => {
+  try {
+      const categories = await getAllCategories();
 
+      res.send({ 
+          success: true,
+          categories: categories
+      });
+  } catch ({ name, message }){
+      next({ name, message });
+  }
 });
-
 
 
 module.exports = categoriesRouter;

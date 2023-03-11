@@ -3,10 +3,12 @@
 const { client } = require("./index");
 
 // db function imports
-const { createUser } = require("./users")
-const { createMedia } = require("./media");
+const { createUser } = require("./users");
+const { createMedia, getMediaByTitle } = require("./media");
 const { createCategory } = require("./categories");
 const { addCategoryToMedia } = require("./media_categories");
+// db testing function imports
+const { testDB } = require("./TESTS");
 
 
 /**
@@ -36,6 +38,7 @@ async function createTables() {
       );
 
       CREATE TABLE media_categories (
+        id SERIAL PRIMARY KEY,
         "mediaId" INTEGER REFERENCES media(id),
         "categoryId" INTEGER REFERENCES categories(id),
         UNIQUE ("mediaId", "categoryId")
@@ -73,6 +76,7 @@ async function dropTables() {
 /**
  ** Create Initial Users
  * Creates initial users for the users table in the database.
+ * @see /db/users/createUser 
  */
 async function createInitialUsers() {
   console.log("\n👤🧍 CREATING INITIAL USERS...");
@@ -96,6 +100,7 @@ async function createInitialUsers() {
 /**
  ** Create Initial Media
  * Creates initial users for the users table in the database.
+ * @see /db/media/createMedia 
  */
 async function createInitialMedia() {
   console.log("\n🎬🎥 CREATING INITIAL MEDIA...");
@@ -146,16 +151,16 @@ async function createInitialMedia() {
 /**
  ** Create Initial Categories
  * Creates initial categories for categories table in the database.
+ * @see /db/categories/createCategory 
  */
 async function createInitialCategories() {
   console.log("\n📋✍️ CREATING INITIAL CATEGORIES...");
   try {
     const categoriesToCreate = [
-      { name: "movie" },
-      { name: "show" },
-      { name: "animation" },
-      { name: "madi's favs" },
-      { name: "drew's favs" },
+      "Movie",
+      "TV Show",
+      "Animation",
+      "Madi's Favorites"
     ];
 
     const categories = await Promise.all(categoriesToCreate.map(createCategory));
@@ -171,17 +176,26 @@ async function createInitialCategories() {
 /**
  ** Create Initial Media Categories
  * Attach initial categories to media
+ * @see /db/media_categories/addCategoryToMedia 
  */
 async function createInitialMediaCategories() {
   console.log("\n👇⭐ CREATING INITIAL MEDIA CATEGORIES...");
   try {
-    // TODO: not hard code these ids
-    const mediaCategoriesToCreate = [
-      { mediaId:  20, categoryId: 2 },
-      { mediaId:  20, categoryId: 4 },
-      { mediaId:  19, categoryId: 4 },
-      { mediaId:  19, categoryId: 2 },
 
+    // console.log("get by title: ", await getMediaByTitle("Killing Eve"));
+    // console.log("ID: ", await getMediaByTitle("Killing Eve").id);
+    // mediaCategoriesToCreate = [ // TODO: MAKE WORK
+    //   { mediaId: await getMediaByTitle("Killing Eve").id, categoryId: 2 },
+    //   { mediaId: await getMediaByTitle("Killing Eve").id, categoryId: 4 },
+    //   { mediaId: await getMediaByTitle("Survivor").id, categoryId: 2 },
+    //   { mediaId: await getMediaByTitle("Survivor").id, categoryId: 4 },
+    // ];
+
+    mediaCategoriesToCreate = [ // TODO: GET RID OF HARD CODED IDS
+      { mediaId: 20, categoryId: 2 },
+      { mediaId: 20, categoryId: 4 },
+      { mediaId: 19, categoryId: 2 },
+      { mediaId: 19, categoryId: 4 },
     ];
 
     const mediaCategories = await Promise.all(mediaCategoriesToCreate.map(addCategoryToMedia));
@@ -194,16 +208,22 @@ async function createInitialMediaCategories() {
 }
 
 
+
+
+
 async function rebuildDB(){
   client.connect();
-
+  console.log("\n\n\n------------------------------ 🔨 🪛 🔧 REBUILDING DATABASE 🔨 🪛 🔧 ------------------------------\n\n");
   await dropTables();
   await createTables();
   await createInitialUsers();
   await createInitialMedia();
   await createInitialCategories();
   await createInitialMediaCategories();
-
+  console.log("\n\n------------------------ 🔨 🪛 🔧 FINISHED REBUILDING DATABASE 🔨 🪛 🔧 -------------------------\n\n");
+  
+  await testDB();
+  
   client.end();
 }
 
