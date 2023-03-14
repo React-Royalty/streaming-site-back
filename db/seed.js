@@ -9,6 +9,8 @@ const { createCategory } = require("./categories");
 const { addCategoryToMedia } = require("./media_categories");
 // db testing function imports
 const { testDB } = require("./TESTS");
+const { createPoster } = require("./posters");
+const { addPosterToMedia } = require("./media_posters");
 
 
 /**
@@ -43,6 +45,20 @@ async function createTables() {
         "categoryId" INTEGER REFERENCES categories(id),
         UNIQUE ("mediaId", "categoryId")
       );
+
+      CREATE TABLE posters (
+        id SERIAL PRIMARY KEY,
+        image VARCHAR(255) UNIQUE NOT NULL,
+        wide BOOLEAN DEFAULT FALSE
+      );
+
+      CREATE TABLE media_posters (
+        id SERIAL PRIMARY KEY,
+        "mediaId" INTEGER REFERENCES media(id),
+        "posterId" INTEGER REFERENCES posters(id),
+        UNIQUE ("mediaId", "posterId")
+      );
+
     `);
     console.log("...┏━┓┏━┓┏━┓ ︵ /(^.^/) tables created!")
   } catch (error) {
@@ -60,6 +76,8 @@ async function dropTables() {
   console.log("\n(┛◉Д◉)┛彡┻━┻ dropping tables...")
   try {
     await client.query (`
+      DROP TABLE IF EXISTS media_posters;
+      DROP TABLE IF EXISTS posters;
       DROP TABLE IF EXISTS media_categories;
       DROP TABLE IF EXISTS categories;
       DROP TABLE IF EXISTS media;
@@ -82,8 +100,8 @@ async function createInitialUsers() {
   console.log("\n👤🧍 CREATING INITIAL USERS...");
   try {
       const usersToCreate = [
-          { username: "madi", password: "queenofreact" },
-          { username: "drew", password: "kingofreact" },
+          { username: "madi", password: "kingofreact" },
+          { username: "drew", password: "queenofreact" },
           { username: "parvati", password: "queenofsurvivor" },
           { username: "taylor", password: "kingofmyheart" },
       ];
@@ -106,6 +124,8 @@ async function createInitialMedia() {
   console.log("\n🎬🎥 CREATING INITIAL MEDIA...");
   try {
     const mediaToCreate = [
+      { title: "The Hunger Games", description: "In a dystopian future, teens Katniss and Peeta are drafted for a televised event pitting young competitors against each other in a fight to the death.", image: "https://i.imgur.com/ab9LCxu.png" },
+      { title: "Catching Fire", description: "After her triumph in the Hunger Games, Katniss Everdeen travels through the districts on a \"Victory Tour\" while a rebellion gathers steam around her.", image: "https://i.imgur.com/MsyAvz0.png" },
       { title: "Easy A", description: "When a lie about Olive's reputation transforms her from anonymous to infamous at her high school, she decides to embrace a provocative new persona.", image: "https://i.imgur.com/oJHf5Qw.png" },
       { title: "Brokeback Mountain", description: "Two sheepherders in 1963 Wyoming become involved in an increasingly passionate affair, but hiding the relationship from their wives proves agonizing.", image: "https://i.imgur.com/4Lrbr0i.png" },
       { title: "The Dark Knight", description: "Batman, Lieutenant Gordon and District Attorney Harvey Dent go up against the Jokeer, a criminal mastermind in ghoulish makeup terrorizing Gotham City.", image: "https://i.imgur.com/eo37Pif.png" },
@@ -157,7 +177,7 @@ async function createInitialMedia() {
       console.log("media:", media);
       console.log("... 🍿🎞️ MEDIA CREATED!");
   } catch (error) {
-      console.error("Error creating media");
+      console.error("Error creating initial media");
       throw error;
   }
 }
@@ -182,7 +202,7 @@ async function createInitialCategories() {
     console.log("categories:", categories);
     console.log("📃🗂️ ...CATEGORIES CREATED!");
   } catch (error) {
-      console.error("Error creating users");
+      console.error("Error creating initital categories");
       throw error;
   }
 }
@@ -197,14 +217,12 @@ async function createInitialMediaCategories() {
   console.log("\n👇⭐ CREATING INITIAL MEDIA CATEGORIES...");
   try {
 
-    // console.log("get by title: ", await getMediaByTitle("Killing Eve"));
-    // console.log("ID: ", await getMediaByTitle("Killing Eve").id);
-    // mediaCategoriesToCreate = [ // TODO: MAKE WORK
-    //   { mediaId: await getMediaByTitle("Killing Eve").id, categoryId: 2 },
-    //   { mediaId: await getMediaByTitle("Killing Eve").id, categoryId: 4 },
-    //   { mediaId: await getMediaByTitle("Survivor").id, categoryId: 2 },
-    //   { mediaId: await getMediaByTitle("Survivor").id, categoryId: 4 },
-    // ];
+    console.log("get by title: ", await getMediaByTitle("Survivor"));
+    console.log("ID: ", await getMediaByTitle("Survivor").id);
+    mediaCategoriesToCreate = [ // TODO: MAKE WORK
+      { mediaId: await getMediaByTitle("Survivor").id, categoryId: 2 },
+      { mediaId: await getMediaByTitle("Survivor").id, categoryId: 4 },
+    ];
 
     mediaCategoriesToCreate = [ // TODO: GET RID OF HARD CODED IDS
       { mediaId: 16, categoryId: 1 },
@@ -217,12 +235,62 @@ async function createInitialMediaCategories() {
     console.log("media categories:", mediaCategories);
     console.log("✅🎯 ... MEDIA CATEGORIES CREATED!");
   } catch (error) {
-      console.error("Error creating users");
+      console.error("Error creating initial media categories");
       throw error;
   }
 }
 
 
+/**
+ ** Create Initial Posters
+ * Creates initial posters for posters table in the database.
+ * @see /db/posters/createPoster
+ */
+async function createInitialPosters() {
+  console.log("\n🙈🙊 CREATING INITIAL POSTERS...");
+  try {
+
+    postersToCreate = [ // TODO: GET RID OF HARD CODING
+      { image: "https://i.imgur.com/ab9LCxu.png", wide: true }, // hunger games og image
+      { image: "https://i.imgur.com/feEJKof.jpg", wide: false },  // hunger games
+      { image: "https://i.imgur.com/MsyAvz0.png", wide: true }, // catching fire og image
+      { image: "https://i.imgur.com/Ol4fjmA.png", wide: false },  // catching fire
+    ];
+
+    const posters = await Promise.all(postersToCreate.map(createPoster));
+    console.log("posters:", posters);
+    console.log("🐵🙉  ...POSTERS CREATED!");
+  } catch (error) {
+      console.error("Error creating initial posters");
+      throw error;
+  }
+}
+
+
+/**
+ ** Create Initial Media Posters
+ * Attach initial posters to media
+ * @see /db/media_posters/addPosterToMedia 
+ */
+async function createInitialMediaPosters() {
+  console.log("\n🦖 🦕 CREATING INITIAL MEDIA POSTERS...");
+  try {
+
+    mediaPostersToCreate = [ // TODO: GET RID OF HARD CODED IDS
+      { mediaId: 1, posterId: 1 },
+      { mediaId: 1, posterId: 2 },
+      { mediaId: 2, posterId: 3 },
+      { mediaId: 2, posterId: 4 },
+    ];
+
+    const mediaPosters = await Promise.all(mediaPostersToCreate.map(addPosterToMedia));
+    console.log("media posters:", mediaPosters);
+    console.log("🐍 🦎 ... MEDIA POSTERS CREATED!");
+  } catch (error) {
+      console.error("Error creating initial media posters");
+      throw error;
+  }
+}
 
 
 
@@ -235,9 +303,11 @@ async function rebuildDB(){
   await createInitialMedia();
   await createInitialCategories();
   await createInitialMediaCategories();
+  await createInitialPosters();
+  await createInitialMediaPosters();
   console.log("\n\n------------------------ 🔨 🪛 🔧 FINISHED REBUILDING DATABASE 🔨 🪛 🔧 -------------------------\n\n");
   
-  await testDB();
+  // await testDB();
   
   client.end();
 }
