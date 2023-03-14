@@ -9,18 +9,17 @@ const { client } = require("./index");
  * Inserts a new piece of media into the database media table - unless a media object with that title already exists.
  * @param { string } title the title for the new piece of media
  * @param { string } description the description for the new piece of media
- * @param { string } image the image url for the media poster
  * @returns { object } the newly created media
  */
-async function createMedia({ title, description, image }) {
+async function createMedia({ title, description }) {
 
   try {
     const { rows: [ media ] } = await client.query(`
-      INSERT INTO media(title, description, image)
-      VALUES ($1, $2, $3)
+      INSERT INTO media(title, description)
+      VALUES ($1, $2)
       ON CONFLICT (title) DO NOTHING
       RETURNING *;
-    `, [title, description, image]);
+    `, [title, description]);
 
     return media;
   } catch (error) {
@@ -82,7 +81,7 @@ async function deleteMedia(mediaId) {
 
 /**
  ** Get All Media
- * Gets and returns all media from media table in database, attaches media's categories
+ * Gets and returns all media from media table in database, attaches media's categories and posters.
  * @returns { array } an array of all media objects including categories array on each media
  */
 async function getAllMedia() {
@@ -100,7 +99,7 @@ async function getAllMedia() {
 
 /**
  ** Get All Media Without Extra
- * Gets and returns all media from media table in database, does not attach extra attributes
+ * Gets and returns all media from media table in database, does not attach extra attributes.
  * @returns { array } an array of all media
  */
 async function getAllMediaWithoutExtra() {
@@ -119,7 +118,8 @@ async function getAllMediaWithoutExtra() {
 
 /**
  ** Get Media By ID
- * Gets and returns a piece of media by its ID
+ * Gets and returns a piece of media by its ID.
+ * @param { number } id the media ID
  * @returns { object } the media found by its ID
  */
 async function getMediaById(id) {
@@ -139,7 +139,8 @@ async function getMediaById(id) {
 
 /**
  ** Get Media By ID With Categories
- * Gets and returns a piece of media by its ID and attaches its categories
+ * Gets and returns a piece of media by its ID and attaches its categories.
+ * @param { number } id the media ID
  * @returns { object } the media found by its ID including attached categories
  */
 async function getMediaByIdWithCategories(id) {
@@ -159,7 +160,8 @@ async function getMediaByIdWithCategories(id) {
 
 /**
  ** Get Media By Title
- * Gets and returns a piece of media by its title
+ * Gets and returns a piece of media by its title.
+ * @param { string } title the media title
  * @returns { object } the media found by its title
  */
 async function getMediaByTitle(title) {
@@ -179,7 +181,8 @@ async function getMediaByTitle(title) {
 
 /**
  ** Get Media By Category
- * Gets and returns all media within a category
+ * Gets and returns all media within a category.
+ * @param { number } categoryId the category ID
  * @returns { object } the media found by category
  */
 async function getMediaByCategory(categoryId) {
