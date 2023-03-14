@@ -33,7 +33,7 @@ router.use(async (req, res, next) => {
     } catch (error) {
       next({
         name: "InvalidTokenError",  // ☝️🚫🤥
-        message: "This token is not associated with any id"
+        message: "No valid token provided"
       });
     }
   } else {

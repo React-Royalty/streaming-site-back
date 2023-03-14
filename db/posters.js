@@ -46,9 +46,38 @@ async function getAllPosters() {
 }
 
 
+/**
+ ** Attach Posters To Media
+ * Attaches posters to media object so that they can be included in a @see getAllMedia() call.
+ * @param { object } media the media objects the posters should be attached to
+ * @returns { object } the media objects updated with a list of posters attribute
+ */
+async function attachPostersToMedia(media) {
+  // no side effects
+  const mediaToReturn = [...media];
+  const mediaIds = media.map(indivMedia => indivMedia.id);
+  if ( !mediaIds?.length ) return [];
 
+  try {
+    // get the posters
+    const posters = await getAllPosters();
+
+    // loop over the media
+    for ( const indivMedia of mediaToReturn ) {
+      // filter the posters to only include those that have this mediaId
+      const postersToAdd = posters.filter(poster => poster.mediaId === indivMedia.id);
+      // attach the posters to each single media
+      indivMedia.posters = postersToAdd;
+    }
+
+    return mediaToReturn;
+  } catch (error) {
+    throw error;
+  }
+}
 
 module.exports = {
   createPoster,
-  getAllPosters
+  getAllPosters,
+  attachPostersToMedia
 }

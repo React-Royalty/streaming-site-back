@@ -46,9 +46,9 @@ async function getAllCategories() {
 
 /**
  ** Attach Categories To Media
- * Attaches category to media in the database media_categories table.
- * @param { object } media the media object [or multiple media objects] the category[ies] should be attached to
- * @returns { object } the media object[s] updated with a list of categories attribute
+ * Attaches categories to media object so that they can be included in a @see getAllMedia() call.
+ * @param { object } media the media objects the categories should be attached to
+ * @returns { object } the media objects updated with a list of categories attribute
  */
 async function attachCategoriesToMedia(media) {
   // no side effects

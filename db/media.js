@@ -1,7 +1,9 @@
 // media db functions
 
-const { attachCategoriesToMedia } = require("./categories");
 const { client } = require("./index");
+
+const { attachCategoriesToMedia } = require("./categories");
+const { attachPostersToMedia } = require("./posters");
 
 
 /**
@@ -90,7 +92,8 @@ async function getAllMedia() {
       SELECT *  
       FROM media;
     `);
-    return attachCategoriesToMedia(media);
+    const mediaWithCategories = await attachCategoriesToMedia(media);
+    return attachPostersToMedia(mediaWithCategories);
   } catch (error) {
     throw error;
   }

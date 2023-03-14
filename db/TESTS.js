@@ -69,13 +69,13 @@ async function testDB() {
   // console.log(await getMediaCategoriesByMediaId(19));
 
 
-  console.log("\n😈 👿 TESTING POSTERS 😈 👿\n");
-  console.log("createPoster( magic school bus poster onto media 1 ) ->");
-  console.log(await createPoster({ mediaId: 1, image: "https://i.imgur.com/j8MU2OP.png", wide: true }));
-  console.log("createPoster( killing eve poster ) ->");
-  console.log(await createPoster({ mediaId: 39, image: "https://i.imgur.com/qJsJz8N.png", wide: false })); // TODO: fix leaving wide empty giving null instead of default false
-  console.log("getAllPosters() ->");
-  console.log(await getAllPosters());
+  // console.log("\n😈 👿 TESTING POSTERS 😈 👿\n");
+  // console.log("createPoster( magic school bus poster onto media 1 ) ->");
+  // console.log(await createPoster({ mediaId: 1, image: "https://i.imgur.com/j8MU2OP.png", wide: true }));
+  // console.log("createPoster( killing eve poster ) ->");
+  // console.log(await createPoster({ mediaId: 39, image: "https://i.imgur.com/qJsJz8N.png", wide: false })); // TODO: fix leaving wide empty giving null instead of default false
+  // console.log("getAllPosters() ->");
+  // console.log(await getAllPosters());
 
 
   console.log("\n\n--------------------------- ⚠️ 🧪 🧫 FINISHED TESTING DATABASE ⚠️ 🧪 🧫 ---------------------------\n\n");
