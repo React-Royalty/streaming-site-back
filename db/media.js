@@ -98,14 +98,12 @@ async function getAllMedia() {
 }
 
 
-
-
 /**
- ** Get All Media Without Categories
- * Gets and returns all media from media table in database, does not attach categories
+ ** Get All Media Without Extra
+ * Gets and returns all media from media table in database, does not attach extra attributes
  * @returns { array } an array of all media
  */
-async function getAllMediaWithoutCategories() {
+async function getAllMediaWithoutExtra() {
   try {
     const { rows: media } = await client.query(`
       SELECT * 
@@ -207,7 +205,7 @@ module.exports = {
   updateMedia,
   deleteMedia,
   getAllMedia,
-  getAllMediaWithoutCategories,
+  getAllMediaWithoutExtra,
   getMediaById,
   getMediaByIdWithCategories,
   getMediaByTitle,
