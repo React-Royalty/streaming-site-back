@@ -27,7 +27,7 @@ async function createCategory(name) {
 
 /**
  ** Get All Categories
- * Gets all categories from categories table of database
+ * Gets all categories from categories table of database.
  * @returns { array } a list of all categories
  */
 async function getAllCategories() {
@@ -46,8 +46,9 @@ async function getAllCategories() {
 
 /**
  ** Attach Categories To Media
- * @param media the m
- * 
+ * Attaches categories to media object so that they can be included in a @see getAllMedia() call.
+ * @param { object } media the media objects the categories should be attached to
+ * @returns { object } the media objects updated with a list of categories attribute
  */
 async function attachCategoriesToMedia(media) {
   // no side effects
