@@ -53,6 +53,7 @@ async function getAllPosters() {
  * @returns { object } the media objects updated with a list of posters attribute
  */
 async function attachPostersToMedia(media) {
+  console.log("attaching posters to media...", media);
   // no side effects
   const mediaToReturn = [...media];
   const mediaIds = media.map(indivMedia => indivMedia.id);
