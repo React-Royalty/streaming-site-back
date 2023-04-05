@@ -100,6 +100,19 @@ async function getAllMedia() {
             'name', categories.name
         )
     ) END AS categories,
+    CASE WHEN "media_crew"."mediaId" IS NULL THEN '[]'::json
+    ELSE
+    JSON_AGG(
+        DISTINCT JSONB_BUILD_OBJECT(
+            'crewId', crew.id,
+            'name', crew.name,
+            'director', "media_crew".director,
+            'creator', "media_crew".creator,
+            'writer', "media_crew".writer,
+            'cast', "media_crew".cast
+
+        )
+    ) END AS crew,
     CASE WHEN posters."mediaId" IS NULL THEN '[]'::json
     ELSE
     JSON_AGG(
@@ -112,11 +125,15 @@ async function getAllMedia() {
     FROM media
     LEFT JOIN posters
         ON posters."mediaId" = media.id
+    LEFT JOIN "media_crew" 
+        ON media.id = "media_crew"."mediaId"
+    LEFT JOIN "crew"
+        ON crew.id = "media_crew"."crewId"
     LEFT JOIN "media_categories" 
         ON media.id = "media_categories"."mediaId"
     LEFT JOIN "categories"
         ON categories.id = "media_categories"."categoryId"
-    GROUP BY media.id, "media_categories"."mediaId", posters."mediaId";
+    GROUP BY media.id, "media_categories"."mediaId", "media_crew"."mediaId", posters."mediaId";
     `);
 
     return media;

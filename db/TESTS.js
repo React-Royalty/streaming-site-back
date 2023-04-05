@@ -33,8 +33,8 @@ async function testDB() {
   // console.log(await updateMedia(1, { title: "I'VE BEEN CHANGED!!", description: "HERE I AM" }));
   // console.log("deleteMedia(5) ->");
   // console.log(await deleteMedia(5));
-  // console.log("getAllMedia() ->");
-  // console.log(await getAllMedia());
+  console.log("getAllMedia() ->");
+  console.log(await getAllMedia());
   // console.log("getAllMediaWithoutCategories() ->");
   // console.log(await getAllMediaWithoutCategories());
   // console.log("getMediaById(19) ->");
