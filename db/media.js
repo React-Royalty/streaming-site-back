@@ -13,15 +13,23 @@ const { attachPostersToMedia } = require("./posters");
  * @param { string } description the description for the new piece of media
  * @returns { object } the newly created media
  */
-async function createMedia({ title, description }) {
+async function createMedia(fields) {
+  const insertString = Object.keys(fields).map(
+    (key, index) => `"${ key }"`
+  ).join(', ');
+
+  const valuesString = Object.keys(fields).map(
+    (key, index) => `$${ index + 1 }`
+  ).join(', ');
+
 
   try {
     const { rows: [ media ] } = await client.query(`
-      INSERT INTO media(title, description)
-      VALUES ($1, $2)
+      INSERT INTO media(${insertString})
+      VALUES (${valuesString})
       ON CONFLICT (title) DO NOTHING
       RETURNING *;
-    `, [title, description]);
+    `, Object.values(fields));
 
     return media;
   } catch (error) {
@@ -92,6 +100,11 @@ async function getAllMedia() {
     SELECT media.id as "mediaId", 
     media.title,
     media.description,
+    media."releaseYear",
+    media."seasonsAvailable",
+    media."maturityRating",
+    media."maturityRatingDescription",
+    media."runTime",
     CASE WHEN "media_categories"."mediaId" IS NULL THEN '[]'::json
     ELSE
     JSON_AGG(
@@ -110,7 +123,6 @@ async function getAllMedia() {
             'creator', "media_crew".creator,
             'writer', "media_crew".writer,
             'cast', "media_crew".cast
-
         )
     ) END AS crew,
     CASE WHEN posters."mediaId" IS NULL THEN '[]'::json
