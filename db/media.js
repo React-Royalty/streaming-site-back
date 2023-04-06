@@ -110,7 +110,9 @@ async function getAllMedia() {
     JSON_AGG(
         DISTINCT JSONB_BUILD_OBJECT(
             'categoryId', categories.id,
-            'name', categories.name
+            'name', categories.name,
+            'genre', categories.genre,
+            'vibe', categories.vibe
         )
     ) END AS categories,
     CASE WHEN "media_crew"."mediaId" IS NULL THEN '[]'::json

@@ -10,14 +10,22 @@ const { getMediaByCategory } = require("./media");
  * @param { string } name the name of the category
  * @returns { object } the newly created category
  */
-async function createCategory(name) {
+async function createCategory(fields) {
+  const insertString = Object.keys(fields).map(
+    (key, index) => `"${ key }"`
+  ).join(', ');
+
+  const valuesString = Object.keys(fields).map(
+    (key, index) => `$${ index + 1 }`
+  ).join(', ');
+
   try {
     const { rows: [ category ] } = await client.query(`
-      INSERT INTO categories(name)
-      VALUES ($1)
+      INSERT INTO categories (${insertString})
+      VALUES (${valuesString})
       ON CONFLICT (name) DO NOTHING
       RETURNING *;
-    `, [name]);
+    `, Object.values(fields));
 
     return category;
   } catch (error) {
