@@ -13,15 +13,23 @@ const { attachPostersToMedia } = require("./posters");
  * @param { string } description the description for the new piece of media
  * @returns { object } the newly created media
  */
-async function createMedia({ title, description }) {
+async function createMedia(fields) {
+  const insertString = Object.keys(fields).map(
+    (key, index) => `"${ key }"`
+  ).join(', ');
+
+  const valuesString = Object.keys(fields).map(
+    (key, index) => `$${ index + 1 }`
+  ).join(', ');
+
 
   try {
     const { rows: [ media ] } = await client.query(`
-      INSERT INTO media(title, description)
-      VALUES ($1, $2)
+      INSERT INTO media(${insertString})
+      VALUES (${valuesString})
       ON CONFLICT (title) DO NOTHING
       RETURNING *;
-    `, [title, description]);
+    `, Object.values(fields));
 
     return media;
   } catch (error) {
@@ -89,11 +97,63 @@ async function deleteMedia(mediaId) {
 async function getAllMedia() {
   try {
     const { rows: media } = await client.query(`
-      SELECT *  
-      FROM media;
+    SELECT media.id as "mediaId", 
+    media.title,
+    media.description,
+    media."releaseYear",
+    media."seasonsAvailable",
+    media."maturityRating",
+    media."maturityRatingDescription",
+    media."runTime",
+    CASE WHEN "media_categories"."mediaId" IS NULL THEN '[]'::json
+    ELSE
+    JSON_AGG(
+        DISTINCT JSONB_BUILD_OBJECT(
+            'categoryId', categories.id,
+            'name', categories.name,
+            'genre', categories.genre,
+            'vibe', categories.vibe
+        )
+    ) END AS categories,
+    CASE WHEN "media_crew"."mediaId" IS NULL THEN '[]'::json
+    ELSE
+    JSON_AGG(
+        DISTINCT JSONB_BUILD_OBJECT(
+            'crewId', crew.id,
+            'name', crew.name,
+            'director', "media_crew".director,
+            'creator', "media_crew".creator,
+            'writer', "media_crew".writer,
+            'cast', "media_crew".cast
+        )
+    ) END AS crew,
+    CASE WHEN posters."mediaId" IS NULL THEN '[]'::json
+    ELSE
+    JSON_AGG(
+        DISTINCT JSONB_BUILD_OBJECT(
+            'posterId', posters.id,
+            'image', posters.image,
+            'titleCard', posters."titleCard",
+            'wide', posters.wide,
+            'featured', posters.featured,
+            'titleLogo', posters."titleLogo"
+        )
+    ) END AS posters
+    FROM media
+    LEFT JOIN posters
+        ON posters."mediaId" = media.id
+    LEFT JOIN "media_crew" 
+        ON media.id = "media_crew"."mediaId"
+    LEFT JOIN "crew"
+        ON crew.id = "media_crew"."crewId"
+    LEFT JOIN "media_categories" 
+        ON media.id = "media_categories"."mediaId"
+    LEFT JOIN "categories"
+        ON categories.id = "media_categories"."categoryId"
+    GROUP BY media.id, "media_categories"."mediaId", "media_crew"."mediaId", posters."mediaId";
     `);
-    const mediaWithCategories = await attachCategoriesToMedia(media);
-    return attachPostersToMedia(mediaWithCategories);
+
+    return media;
   } catch (error) {
     throw error;
   }
@@ -170,9 +230,61 @@ async function getMediaByIdWithCategories(id) {
 async function getMediaByTitle(title) {
   try {
     const { rows: [ media ] } = await client.query(`
-      SELECT * 
+      SELECT media.id as "mediaId", 
+      media.title,
+      media.description,
+      media."releaseYear",
+      media."seasonsAvailable",
+      media."maturityRating",
+      media."maturityRatingDescription",
+      media."runTime",
+      CASE WHEN "media_categories"."mediaId" IS NULL THEN '[]'::json
+      ELSE
+      JSON_AGG(
+          DISTINCT JSONB_BUILD_OBJECT(
+              'categoryId', categories.id,
+              'name', categories.name,
+              'genre', categories.genre,
+              'vibe', categories.vibe
+          )
+      ) END AS categories,
+      CASE WHEN "media_crew"."mediaId" IS NULL THEN '[]'::json
+      ELSE
+      JSON_AGG(
+          DISTINCT JSONB_BUILD_OBJECT(
+              'crewId', crew.id,
+              'name', crew.name,
+              'director', "media_crew".director,
+              'creator', "media_crew".creator,
+              'writer', "media_crew".writer,
+              'cast', "media_crew".cast
+          )
+      ) END AS crew,
+      CASE WHEN posters."mediaId" IS NULL THEN '[]'::json
+      ELSE
+      JSON_AGG(
+          DISTINCT JSONB_BUILD_OBJECT(
+              'posterId', posters.id,
+              'image', posters.image,
+              'titleCard', posters."titleCard",
+              'wide', posters.wide,
+              'featured', posters.featured,
+              'titleLogo', posters."titleLogo"
+          )
+      ) END AS posters
       FROM media
-      WHERE title = $1;
+      LEFT JOIN posters
+        ON posters."mediaId" = media.id
+      LEFT JOIN "media_crew" 
+        ON media.id = "media_crew"."mediaId"
+      LEFT JOIN "crew"
+        ON crew.id = "media_crew"."crewId"
+      LEFT JOIN "media_categories" 
+        ON media.id = "media_categories"."mediaId"
+      LEFT JOIN "categories"
+        ON categories.id = "media_categories"."categoryId"
+      WHERE title = $1
+      GROUP BY media.id, "media_categories"."mediaId", "media_crew"."mediaId", posters."mediaId";
     `, [title]);
 
     return media;
@@ -189,6 +301,7 @@ async function getMediaByTitle(title) {
  * @returns { object } the media found by category
  */
 async function getMediaByCategory(categoryId) {
+  console.log("GETTING MEDIA BY CATEGORY");
   try {
     const { rows: mediaIds } = await client.query(`
       SELECT "mediaId" 
@@ -197,13 +310,160 @@ async function getMediaByCategory(categoryId) {
     `, [categoryId]);
 
     const media = await Promise.all(mediaIds.map(mediaId => getMediaById(mediaId.mediaId)));
-    
-    return attachCategoriesToMedia(media);
+    const mediaWithPosters = await attachPostersToMedia(media);
+    return attachCategoriesToMedia(mediaWithPosters);
 
   } catch (error) {
     throw error;
   }
 }
+
+
+// /**
+//  ** Get All Categories With Media
+//  * Gets and returns all categories with respective media attached.
+//  * @returns { object } the categories with media attached
+//  */
+// async function getAllCategoriesWithMedia() {
+//   try {
+//     const { rows : categories } = await client.query(`
+//     SELECT categories.id AS "categoryId", 
+//     categories.name,
+//     CASE WHEN "media_categories"."categoryId" IS NULL THEN '[]'::json
+//     ELSE
+//     JSON_AGG(
+//         JSON_BUILD_OBJECT(
+//             'mediaId', media.id,
+//             'title', media.title,
+//             'description', media.description
+//         )
+//     ) END AS media
+//     FROM categories
+//     LEFT JOIN "media_categories" 
+//         ON categories.id = "media_categories"."categoryId"
+//     LEFT JOIN "media"
+//         ON media.id = "media_categories"."mediaId"
+//     GROUP BY categories.id, "media_categories"."categoryId";
+//     `);
+
+//     console.log("categories", categories)
+
+//     categories.forEach( async () => await AttachPostersAndCategoriesToMedia());
+
+
+//     const posters = await AttachPostersAndCategoriesToMedia();
+
+//     console.log("UGHDUGHDUGHDUGHDUGH", posters[0]);
+
+//     return categories;
+
+//   } catch (error) {
+//     throw error;
+//   }
+// }
+
+
+/**
+ ** Get All Categories With Media
+ * Gets and returns all categories with respective media attached.
+ * @returns { object } the categories with media attached
+ */
+async function getAllCategoriesWithMedia() {
+  try {
+    const { rows : categories } = await client.query(`
+    SELECT categories.id AS "categoryId", 
+    categories.name,
+    CASE WHEN "media_categories"."categoryId" IS NULL THEN '[]'::json
+    ELSE
+    JSON_AGG(
+        JSON_BUILD_OBJECT(
+            'mediaId', mp."mediaId",
+            'title', mp.title,
+            'description', mp.description,
+            'posters', mp.posters,
+            'categories', mp.categories
+            )
+        
+    ) END AS media
+    FROM categories
+    LEFT JOIN "media_categories" 
+        ON categories.id = "media_categories"."categoryId"
+    LEFT JOIN (
+        SELECT media.id AS "mediaId", media.title, media.description,
+        CASE WHEN "media_categories"."mediaId" IS NULL THEN '[]'::json
+    ELSE
+    JSON_AGG(
+        DISTINCT JSONB_BUILD_OBJECT(
+            'categoryId', categories.id,
+            'name', categories.name
+        )
+    ) END AS categories,
+        CASE WHEN posters."mediaId" IS NULL THEN '[]'::json
+            ELSE
+                JSON_AGG(
+                    DISTINCT JSONB_BUILD_OBJECT(
+                      'posterId', posters.id,
+                      'image', posters.image,
+                      'titleCard', posters."titleCard",
+                      'wide', posters.wide,
+                      'featured', posters.featured,
+                      'titleLogo', posters."titleLogo"
+                    )
+                ) END AS posters
+                FROM media
+                LEFT JOIN posters
+                ON posters."mediaId" = media.id
+                LEFT JOIN "media_categories"
+                ON "media_categories"."mediaId" = media.id
+                LEFT JOIN categories
+                ON "media_categories"."categoryId" = categories.id
+                GROUP BY media.id, posters."mediaId", media_categories."mediaId"
+                ) as mp on mp."mediaId" = "media_categories"."mediaId"
+        GROUP BY categories.id, "media_categories"."categoryId";
+    `);
+
+    console.log("categories", categories)
+
+    return categories;
+
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+
+/**
+ ** Get All Categories With Media
+ * Gets and returns all categories with respective media attached.
+ * @returns { object } the categories with media attached
+ */
+async function getAllCategoriesWithMedia1() {
+  console.log("ughhh")
+  try {
+    const { rows : categories } = await client.query(`
+      SELECT * 
+      FROM categories;
+    `);
+
+    console.log("categories pre media", categories);
+
+    // const categoriesWithMedia = await Promise.all(categories.map(category => category.media = getMediaByCategory(category.id)));
+    const categoriesWithMedia = categories.forEach( async (category) => category.media = await getMediaByCategory(category.id));
+    console.log("categories POST media", categories);
+
+    console.log("categoriesWithMedia", categoriesWithMedia)
+    console.log("categories", categories[5])
+
+    console.log("good job")
+
+    return categories;
+
+  } catch (error) {
+    throw error;
+  }
+}
+
 
 
 module.exports = {
@@ -215,5 +475,6 @@ module.exports = {
   getMediaById,
   getMediaByIdWithCategories,
   getMediaByTitle,
-  getMediaByCategory
+  getMediaByCategory,
+  getAllCategoriesWithMedia
 }

@@ -1,6 +1,7 @@
 // categories db functions
 
 const { client } = require("./index");
+const { getMediaByCategory } = require("./media");
 
 
 /**
@@ -9,14 +10,22 @@ const { client } = require("./index");
  * @param { string } name the name of the category
  * @returns { object } the newly created category
  */
-async function createCategory(name) {
+async function createCategory(fields) {
+  const insertString = Object.keys(fields).map(
+    (key, index) => `"${ key }"`
+  ).join(', ');
+
+  const valuesString = Object.keys(fields).map(
+    (key, index) => `$${ index + 1 }`
+  ).join(', ');
+
   try {
     const { rows: [ category ] } = await client.query(`
-      INSERT INTO categories(name)
-      VALUES ($1)
+      INSERT INTO categories (${insertString})
+      VALUES (${valuesString})
       ON CONFLICT (name) DO NOTHING
       RETURNING *;
-    `, [name]);
+    `, Object.values(fields));
 
     return category;
   } catch (error) {
@@ -38,6 +47,43 @@ async function getAllCategories() {
     `);
 
     return rows;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+/**
+ ** Attach Media To Categories
+ * Attaches media to category object so that they can be included in a @see getAllCategoriesWithMedia call.
+ * @param { object } media the media objects that should be attached to the categories
+ * @returns { object } the categories objects updated with attached media array
+ */
+async function attachMediaToCategories(media) {
+  // no side effects
+  const mediaToReturn = [...media];
+  const binds = media.map((_, index) => `$${index + 1}`).join(', ');
+  const mediaIds = media.map(indivMedia => indivMedia.id);
+  if ( !mediaIds?.length ) return [];
+
+  try {
+    // get the categories, JOIN with media_categories (so we can get a mediaId), and only those that have those media ids on the media_categories join
+    const { rows: categories } = await client.query(`
+      SELECT media.*, media_categories.id AS "mediaCategoryId", media_categories."mediaId"
+      FROM media 
+      JOIN media_categories ON media_categories."categoryId" = categories.id
+      WHERE media_categories."mediaId" IN (${ binds });
+    `, mediaIds);
+
+    // loop over the media
+    for ( const indivMedia of mediaToReturn ) {
+      // filter the categories to only include those that have this mediaId
+      const categoriesToAdd = categories.filter(category => category.mediaId === indivMedia.id);
+      // attach the categories to each single media
+      indivMedia.categories = categoriesToAdd;
+    }
+
+    return mediaToReturn;
   } catch (error) {
     throw error;
   }

@@ -122,7 +122,7 @@ mediaRouter.delete("/:mediaId", requireUser, async (req, res, next) => {
 
 /**
  ** GET /api/media
- * Sends back a list of all media in the database, including their categories
+ * Sends back a list of all media in the database, including their categories and posters
  * @see /db/media/getAllMedia 
  */
 mediaRouter.get("/", async (req, res, next) => {

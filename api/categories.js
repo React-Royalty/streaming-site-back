@@ -5,6 +5,7 @@ const categoriesRouter = express.Router();
 
 // function imports
 const { getAllCategories, createCategory } = require("../db/categories");
+const { getAllCategoriesWithMedia } = require("../db/media");
 const { requireUser } = require("./utils");
 
 
@@ -44,11 +45,12 @@ categoriesRouter.post("/", requireUser, async (req, res, next) => {
 
 /**
  ** GET /api/categories
- * Get and send back a list of all categories in the database
+ * Get and send back a list of all categories in the database with respective media included
 */
 categoriesRouter.get('/', async (req, res, next) => {
+  console.log("GETTING CATEGORIES CON MEDIA");
   try {
-      const categories = await getAllCategories();
+      const categories = await getAllCategoriesWithMedia();
 
       res.send({ 
           success: true,
