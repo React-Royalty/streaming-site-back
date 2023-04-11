@@ -11,14 +11,22 @@ const { client } = require("./index");
  * @param { boolean } wide an indication of whether the poster has a wide ratio
  * @returns { object } the newly created poster
  */
-async function createPoster({ mediaId, image, wide }) {
+async function createPoster(fields) {
+  const insertString = Object.keys(fields).map(
+    (key, index) => `"${ key }"`
+  ).join(', ');
+
+  const valuesString = Object.keys(fields).map(
+    (key, index) => `$${ index + 1 }`
+  ).join(', ');
+
   try {
     const { rows: [ poster ] } = await client.query(`
-      INSERT INTO posters("mediaId", image, wide)
-      VALUES ($1, $2, $3)
+      INSERT INTO posters (${insertString})
+      VALUES (${valuesString})
       ON CONFLICT (image) DO NOTHING
       RETURNING *;
-    `, [mediaId, image, wide]);
+    `, Object.values(fields));
 
     return poster;
   } catch (error) {
