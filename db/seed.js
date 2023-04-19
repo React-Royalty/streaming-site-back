@@ -229,7 +229,8 @@ async function createInitialMedia() {
       { title: "Chewing Gum", description: "Chewing Gum is a British television sitcom created and written by Michaela Coel, based on her 2012 play Chewing Gum Dreams. It stars Coel and Robert Lonsdale. Set in London, the show follows 24-year-old shop assistant Tracey Gordon, a restricted, religious virgin, who wants to have sex and learn more about the world.", releaseYear: 2015, maturityRating: "TV-MA", maturityRatingDescription: "language, sex", seasonsAvailable: 2 },
       { title: "Rap Sh!t", description: "Two estranged high school friends from outside Miami reunite to form an all-female rap group, hoping to make it in the music industry.", releaseYear: 2022, maturityRating: "TV-MA", maturityRatingDescription: "language, sex, smoking", seasonsAvailable: 1 },
       { title: "I May Destroy You", description: "After being sexually assaulted in a nightclub, Arabella's life changes irreversibly and she is forced to reassess everything, including her career, friends and family.", releaseYear: 2020, maturityRating: "TV-MA", maturityRatingDescription: "language, sexual assault, nudity", seasonsAvailable: 1 },
-      { title: "Courage the Cowardly Dog", description: "Courage is a timid pink dog with paranoia problems. His owners are an old couple living on a farm full of bizarre adversaries. Courage must overcome his fear and help save his owners, Eustace and Muriel, from ghosts and paranormal spirits living on the farm.", releaseYear: 1999, maturityRating: "TV-MA", maturityRatingDescription: "language, sexual assault, nudity", seasonsAvailable: 4 }
+      { title: "Courage the Cowardly Dog", description: "Courage is a timid pink dog with paranoia problems. His owners are an old couple living on a farm full of bizarre adversaries. Courage must overcome his fear and help save his owners, Eustace and Muriel, from ghosts and paranormal spirits living on the farm.", releaseYear: 1999, maturityRating: "TV-Y7", maturityRatingDescription: "frightening scenes", seasonsAvailable: 4 },
+      { title: "Foster's Home for Imaginary Friends", description: "Sometimes imaginary friends get lost or kids outgrow them and that's why Madame Foster started Foster's Home for Imaginary Friends. When kids dream up pals, they come to life and the house is filled with diverse characters waiting to be reunited or adopted to new kids.", releaseYear: 2004, maturityRating: "TV-Y7", maturityRatingDescription: "name calling"}
 
 
       // { title: "", description: "" },
@@ -657,6 +658,11 @@ async function createInitialPosters() {
       { mediaId: mediaHash["Courage the Cowardly Dog"].id, image: "https://i.imgur.com/bPSIOAn.png", featured: true },
       { mediaId: mediaHash["Courage the Cowardly Dog"].id, image: "https://i.imgur.com/dYSclVp.png", titleLogo: true },
 
+      { mediaId: mediaHash["Foster's Home for Imaginary Friends"].id, image: "https://i.imgur.com/WEJ7Ftk.png", titleCard: true, wide: true },
+      // { mediaId: mediaHash["Foster's Home for Imaginary Friends"].id, image: "https://i.imgur.com/rcDvkLW.png", titleCard: true },
+      { mediaId: mediaHash["Foster's Home for Imaginary Friends"].id, image: "https://i.imgur.com/hQLrQJi.png", featured: true },
+      { mediaId: mediaHash["Foster's Home for Imaginary Friends"].id, image: "https://i.imgur.com/UWAJz8U.png", titleLogo: true },
+
 
 
       // { mediaId: mediaHash[""].id, image: "", featured: true },
@@ -743,32 +749,32 @@ async function createInitialCategories() {
       { name: "Westerns", genre: true },
 
       // vibes
-      { name: "Witty", vibe: true },
-      { name: "Irreverent", vibe: true },
-      { name: "Intimate", vibe: true },
-      { name: "Emotional", vibe: true },
-      { name: "Romantic", vibe: true },
+      { name: "Absurd", vibe: true },
+      { name: "Bittersweet", vibe: true },
+      { name: "Cerebral", vibe: true },
+      { name: "Charming", vibe: true },
+      { name: "Chilling", vibe: true },
       { name: "Dark", vibe: true },
+      { name: "Deadpan", vibe: true },
+      { name: "Emotional", vibe: true },
       { name: "Exciting", vibe: true },
-      { name: "Inspiring", vibe: true },
-      { name: "Heartfelt", vibe: true },
       { name: "Feel-Good", vibe: true },
       { name: "Goofy", vibe: true },
-      { name: "Charming", vibe: true },
-      { name: "Quirky", vibe: true },
-      { name: "Violent", vibe: true },
-      { name: "Scary", vibe: true },
-      { name: "Understated", vibe: true },
-      { name: "Ominous", vibe: true },
-      { name: "Chilling", vibe: true },
-      { name: "Deadpan", vibe: true },
-      { name: "Bittersweet", vibe: true },
-      { name: "Suspenseful", vibe: true },
-      { name: "Absurd", vibe: true },
-      { name: "Offbeat", vibe: true },
-      { name: "Cerebral", vibe: true },
+      { name: "Heartfelt", vibe: true },
+      { name: "Inspiring", vibe: true },
+      { name: "Intimate", vibe: true },
+      { name: "Irreverent", vibe: true },
       { name: "Mind-Bending", vibe: true },
+      { name: "Offbeat", vibe: true },
+      { name: "Ominous", vibe: true },
+      { name: "Quirky", vibe: true },
       { name: "Raunchy", vibe: true },
+      { name: "Romantic", vibe: true },
+      { name: "Scary", vibe: true },
+      { name: "Suspenseful", vibe: true },
+      { name: "Understated", vibe: true },
+      { name: "Violent", vibe: true },
+      { name: "Witty", vibe: true },
 
     ];
 
@@ -1267,6 +1273,12 @@ async function createInitialMediaCategories() {
       { mediaId:  mediaHash["I May Destroy You"].id, categoryId: categoriesHash["Chilling"].id },
       { mediaId:  mediaHash["I May Destroy You"].id, categoryId: categoriesHash["TV Dramas"].id },
       { mediaId:  mediaHash["I May Destroy You"].id, categoryId: categoriesHash["Intimate"].id },
+      { mediaId:  mediaHash["Courage the Cowardly Dog"].id, categoryId: categoriesHash["TV Shows"].id },
+      { mediaId:  mediaHash["Courage the Cowardly Dog"].id, categoryId: categoriesHash["Kids' TV"].id },
+      { mediaId:  mediaHash["Courage the Cowardly Dog"].id, categoryId: categoriesHash["Dark"].id },
+      { mediaId:  mediaHash["Foster's Home for Imaginary Friends"].id, categoryId: categoriesHash["TV Shows"].id },
+      { mediaId:  mediaHash["Foster's Home for Imaginary Friends"].id, categoryId: categoriesHash["Kids' TV"].id },
+      { mediaId:  mediaHash["Foster's Home for Imaginary Friends"].id, categoryId: categoriesHash["Goofy"].id },
 
 
 
@@ -2124,7 +2136,20 @@ async function createInitialCrew() {
       "Aida Osman",
       "KaMillion",
       "Jonica Booth",
-      "RJ Cyler"
+      "RJ Cyler",
+      "Marty Grabstein",
+      "John Dilworth",
+      "Thea White",
+      "Lionel Wilson",
+      "Paul Schoeffer",
+      "Simon Prebble",
+      "Craig McCracken",
+      "Grey DeLisle",
+      "Sean Marquette",
+      "Tom Kenny",
+      "Phil LeMarr",
+      "Tom Kane",
+      "Candi Milo"
       // "",
       // "",
       // "",
@@ -3064,6 +3089,20 @@ async function createInitialMediaCrew() {
       { mediaId: mediaHash["I May Destroy You"].id, crewId: crewHash["Paapa Essiedu"].id, cast: true },
       { mediaId: mediaHash["I May Destroy You"].id, crewId: crewHash["Weruche Opia"].id, cast: true },
       { mediaId: mediaHash["I May Destroy You"].id, crewId: crewHash["Sarah Niles"].id, cast: true },
+      { mediaId: mediaHash["Courage the Cowardly Dog"].id, crewId: crewHash["Marty Grabstein"].id, creator: true, cast: true},
+      { mediaId: mediaHash["Courage the Cowardly Dog"].id, crewId: crewHash["John Dilworth"].id, cast: true },
+      { mediaId: mediaHash["Courage the Cowardly Dog"].id, crewId: crewHash["Thea White"].id, cast: true },
+      { mediaId: mediaHash["Courage the Cowardly Dog"].id, crewId: crewHash["Lionel Wilson"].id, cast: true },
+      { mediaId: mediaHash["Courage the Cowardly Dog"].id, crewId: crewHash["Paul Schoeffer"].id, cast: true },
+      { mediaId: mediaHash["Courage the Cowardly Dog"].id, crewId: crewHash["Simon Prebble"].id, cast: true },
+      { mediaId: mediaHash["Foster's Home for Imaginary Friends"].id, crewId: crewHash["Craig McCracken"].id, creator: true},
+      { mediaId: mediaHash["Foster's Home for Imaginary Friends"].id, crewId: crewHash["Grey DeLisle"].id, cast: true },
+      { mediaId: mediaHash["Foster's Home for Imaginary Friends"].id, crewId: crewHash["Sean Marquette"].id, cast: true },
+      { mediaId: mediaHash["Foster's Home for Imaginary Friends"].id, crewId: crewHash["Tom Kenny"].id, cast: true },
+      { mediaId: mediaHash["Foster's Home for Imaginary Friends"].id, crewId: crewHash["Phil LeMarr"].id, cast: true },
+      { mediaId: mediaHash["Foster's Home for Imaginary Friends"].id, crewId: crewHash["Tom Kane"].id, cast: true },
+      { mediaId: mediaHash["Foster's Home for Imaginary Friends"].id, crewId: crewHash["Candi Milo"].id, cast: true },
+
 
       // { mediaId: mediaHash[""].id, crewId: crewHash[""].id, cast: true },
       // { mediaId: mediaHash[""].id, crewId: crewHash[""].id, cast: true },
