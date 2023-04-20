@@ -85,8 +85,23 @@ async function attachPostersToMedia(media) {
   }
 }
 
+async function choosePosters(media) {
+  const titleCards = media.posters.filter(poster => poster.titleCard);
+  const wideTitleCards = titleCards.filter(poster => poster.wide);
+  const tallTitleCards = titleCards.filter(poster => !poster.wide);
+  media.wideTitleCard = wideTitleCards[~~(Math.random() * wideTitleCards.length)];
+  media.tallTitleCard = tallTitleCards[~~(Math.random() * tallTitleCards.length)];
+  const featuredPosters = media.posters.filter(poster => poster.featured);
+  media.featuredPoster = featuredPosters[~~(Math.random() * featuredPosters.length)];
+  const titleLogos = media.posters.filter(poster => poster.titleLogo);
+  media.titleLogo = titleLogos[~~(Math.random() * titleLogos.length)];
+
+  return media;
+}
+
 module.exports = {
   createPoster,
   getAllPosters,
-  attachPostersToMedia
+  attachPostersToMedia,
+  choosePosters
 }

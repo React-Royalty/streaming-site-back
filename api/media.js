@@ -6,6 +6,7 @@ const mediaRouter = express.Router();
 // function imports
 const { getAllMedia, getMediaById, getMediaByTitle, createMedia, updateMedia, getMediaByIdWithCategories, deleteMedia } = require("../db/media");
 const { deleteCategoryFromMedia } = require("../db/media_categories");
+const { choosePosters } = require("../db/posters");
 const { requireUser } = require("./utils");
 
 
@@ -129,10 +130,21 @@ mediaRouter.get("/", async (req, res, next) => {
   try {
     const allMedia = await getAllMedia();
 
-    res.send({ 
-      success: true,
-      allMedia: allMedia
-    });
+    if ( allMedia ) {
+      // CHOOSE AND ATTACH RANDOM POSTER
+      allMedia.forEach((indivMedia) => choosePosters(indivMedia));
+
+      res.send({ 
+        success: true,
+        allMedia: allMedia
+      });
+    } else {
+      next({
+        name: "getAllMedia Error",
+        message: "There was an error getting media"
+      });
+    }
+
   } catch ({ name,message }){
     next({ name,message });
   }
