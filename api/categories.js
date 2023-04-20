@@ -6,6 +6,7 @@ const categoriesRouter = express.Router();
 // function imports
 const { getAllCategories, createCategory } = require("../db/categories");
 const { getAllCategoriesWithMedia } = require("../db/media");
+const { choosePosters } = require("../db/posters");
 const { requireUser } = require("./utils");
 
 
@@ -52,10 +53,22 @@ categoriesRouter.get('/', async (req, res, next) => {
   try {
       const categories = await getAllCategoriesWithMedia();
 
-      res.send({ 
+      if ( categories ) {
+        categories.forEach((category) => {
+          category.media.forEach((indivMedia) => choosePosters(indivMedia));
+        })
+  
+        res.send({ 
           success: true,
           categories: categories
-      });
+        });
+      } else {
+        next({
+          name: "getAllCategories Error",
+          message: "There was an error getting categories"
+        });
+      }
+
   } catch ({ name, message }){
       next({ name, message });
   }
