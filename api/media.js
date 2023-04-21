@@ -1,6 +1,8 @@
 // media api router
 
 const express = require("express");
+const { organizeCategories } = require("../db/categories");
+const { organizeCrew } = require("../db/crew");
 const mediaRouter = express.Router();
 
 // function imports
@@ -159,11 +161,21 @@ mediaRouter.get("/", async (req, res, next) => {
 mediaRouter.get("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
-    const media = await getMediaById(id);
-    res.send({ 
-      success: true,
-      media: media
-    });
+    let media = await getMediaById(id);
+
+    if ( media ) {
+      media = choosePosters(media);
+      res.send({ 
+        success: true,
+        media: media
+      });
+    } else {
+      next({
+        name: "getMediaById Error",
+        message: "There was an error getting media by id #" + id
+      });
+    }
+
   } catch ({ name, message }) {
     next({ name, message })
   }
@@ -178,12 +190,23 @@ mediaRouter.get("/:id", async (req, res, next) => {
 mediaRouter.get('/title/:title', async (req,res,next) => {
   try{
     const { title } = req.params;
-    const media = await getMediaByTitle(title);
+    let media = await getMediaByTitle(title);
 
-    res.send({ 
-      success: true,
-      media: media
-    });
+    if ( media ) {
+      media = choosePosters(media);
+      media = organizeCrew(media);
+      media = organizeCategories(media);
+
+      res.send({ 
+        success: true,
+        media: media
+      });
+    } else {
+      next({
+        name: "getMediaByTitle Error",
+        message: "There was an error getting media by title \"" + title + "\""
+      });
+    }
   } catch ({ name, message }) {
     next({ name, message })
   }

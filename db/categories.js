@@ -127,8 +127,15 @@ async function attachCategoriesToMedia(media) {
 }
 
 
+function organizeCategories(media) {
+  media.genres = media.categories.filter(category => category.genre);
+  media.vibes = media.categories.filter(category => category.vibe);
+  return media;
+}
+
 module.exports = {
   createCategory,
   getAllCategories,
-  attachCategoriesToMedia
+  attachCategoriesToMedia,
+  organizeCategories
 }
