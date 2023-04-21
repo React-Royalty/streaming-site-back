@@ -24,22 +24,22 @@ usersRouter.post("/register", async (req, res, next) => {
   try {
     if ( !username ) {  // require username
       next({ 
-        name: "MissingCredentialsError", 
+        name: "RegistrationUsernameInputError", 
         message: "Missing username"
       });
     } else if ( !password ) { // require password
       next({
-        name: "MissingCredentialsError",
+        name: "RegistrationPasswordInputError",
         message: "Missing password"
       });
     } else if ( username.length < 3 ) { // require all usernames to be at least 3 characters long 
       next({
-        name: "ShortUsernameError",
+        name: "RegistrationUsernameInputError",
         message: "Username is too short, must be at least 3 characters"
       });
     } else if ( password.length < 8 ) { // require all passwords to be at least 8 characters long
       next({
-        name: "ShortPasswordError",
+        name: "RegistrationPasswordInputError",
         message: "Password is too short, must be at least 8 characters"
       });
     } else {
@@ -47,7 +47,7 @@ usersRouter.post("/register", async (req, res, next) => {
 
       if ( _user ) {    // require unique username
         next ({
-          name:"UserExistsError",
+          name:"RegistrationUsernameInputError",
           message:"That username is already taken"
         });
       } else {    // okay, you may join
@@ -76,12 +76,12 @@ usersRouter.post("/login", async (req, res, next) => {
 
   if ( !username ) {    // require username
     next({
-      name:"MissingCredentialsError",
+      name:"LoginMissingUsernameError",
       message:"You must supply a username"
     });
   } else if ( !password ) { // require password
     next({
-      name: "MissingCredentialsError",
+      name: "LoginMissingPasswordError",
       message: "You must supply a password"
     });
   }
@@ -99,7 +99,7 @@ usersRouter.post("/login", async (req, res, next) => {
     } else { 
       next({
         name: "IncorrectCredentialsError",
-        message:"Username or password is incorrect"
+        message:"Username or password is incorrect, try again"
       });
     }
   } catch ({ name, message }) {
