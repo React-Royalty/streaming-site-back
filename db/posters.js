@@ -85,7 +85,7 @@ async function attachPostersToMedia(media) {
   }
 }
 
-async function choosePosters(media) {
+function choosePosters(media) {
   const titleCards = media.posters.filter(poster => poster.titleCard);
   const wideTitleCards = titleCards.filter(poster => poster.wide);
   const tallTitleCards = titleCards.filter(poster => !poster.wide);
@@ -95,7 +95,7 @@ async function choosePosters(media) {
   media.featuredPoster = featuredPosters[~~(Math.random() * featuredPosters.length)];
   const titleLogos = media.posters.filter(poster => poster.titleLogo);
   media.titleLogo = titleLogos[~~(Math.random() * titleLogos.length)];
-
+  delete media["posters"];
   return media;
 }
 
