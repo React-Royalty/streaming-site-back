@@ -44,8 +44,20 @@ async function getAllCrew() {
 }
 
 
+function organizeCrew(media) {
+  const organizedCrewMembers = {};
+  organizedCrewMembers.directors = media.crew.filter(crewMember => crewMember.director);
+  organizedCrewMembers.creators = media.crew.filter(crewMember => crewMember.creator);
+  organizedCrewMembers.writers = media.crew.filter(crewMember => crewMember.writer);
+  organizedCrewMembers.cast = media.crew.filter(crewMember => crewMember.cast);
+  media.organizedCrew = organizedCrewMembers;
+  return media;
+}
+
+
 
 module.exports = {
   createCrew,
-  getAllCrew
+  getAllCrew,
+  organizeCrew
 }

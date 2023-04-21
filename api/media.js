@@ -1,6 +1,8 @@
 // media api router
 
 const express = require("express");
+const { organizeCategories } = require("../db/categories");
+const { organizeCrew } = require("../db/crew");
 const mediaRouter = express.Router();
 
 // function imports
@@ -192,6 +194,9 @@ mediaRouter.get('/title/:title', async (req,res,next) => {
 
     if ( media ) {
       media = choosePosters(media);
+      media = organizeCrew(media);
+      media = organizeCategories(media);
+
       res.send({ 
         success: true,
         media: media
