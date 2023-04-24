@@ -127,6 +127,82 @@ async function attachCategoriesToMedia(media) {
 }
 
 
+
+/**
+ ** Get Homepage Categories With Media
+ * Gets and returns homepage categories with respective media attached.
+ * @returns { object } the homepage categories with media attached
+ */
+async function getHomepageCategoriesWithMedia() {
+  try {
+    const { rows : allCategories } = await client.query(`
+      SELECT categories.id AS "categoryId", 
+      categories.name,
+      categories.special,
+      CASE WHEN "media_categories"."categoryId" IS NULL THEN '[]'::json
+      ELSE
+      JSON_AGG(
+        JSON_BUILD_OBJECT(
+          'mediaId', mp."mediaId",
+          'title', mp.title,
+          'description', mp.description,
+          'posters', mp.posters
+        )
+      ) END AS media
+      FROM categories
+      LEFT JOIN "media_categories"
+        ON categories.id = "media_categories"."categoryId"
+      LEFT JOIN (
+        SELECT media.id AS "mediaId", media.title, media.description,
+        CASE WHEN "media_categories"."mediaId" IS NULL THEN '[]'::json
+        ELSE
+        JSON_AGG(
+          DISTINCT JSONB_BUILD_OBJECT(
+            'categoryId', categories.id,
+            'name', categories.name
+          )
+        ) END AS categories,
+      CASE WHEN posters."mediaId" IS NULL THEN '[]'::json
+      ELSE
+      JSON_AGG(
+        DISTINCT JSONB_BUILD_OBJECT(
+          'posterId', posters.id,
+          'image', posters.image,
+          'titleCard', posters."titleCard",
+          'wide', posters.wide,
+          'featured', posters.featured,
+          'titleLogo', posters."titleLogo"
+        )
+      ) END AS posters
+      FROM media
+      LEFT JOIN posters
+        ON posters."mediaId" = media.id
+      LEFT JOIN "media_categories"
+        ON "media_categories"."mediaId" = media.id
+      LEFT JOIN categories
+        ON "media_categories"."categoryId" = categories.id
+      GROUP BY media.id, posters."mediaId", media_categories."mediaId"
+      ) as mp on mp."mediaId" = "media_categories"."mediaId"
+      WHERE homepage
+      GROUP BY categories.id, "media_categories"."categoryId";
+    `);
+
+
+    const [ specialHomepageCategories, normalHomepageCategories ] = allCategories.reduce(([specialHomepageCategories, normalHomepageCategories], category) => ( category.special ? [[...specialHomepageCategories, category], normalHomepageCategories] : [specialHomepageCategories, [...normalHomepageCategories, category]]), [[], []]);
+
+    // console.log("\n\n\n home page categories\n", normalHomepageCategories)
+    // console.log("\n\n\n SPECIAL home page categories\n", specialHomepageCategories)
+    const categories = {};
+    categories.homepage = normalHomepageCategories;
+    categories.special = specialHomepageCategories;
+    return categories;
+
+  } catch (error) {
+    throw error;
+  }
+}
+
+
 function organizeCategories(media) {
   media.genres = media.categories.filter(category => category.genre);
   media.vibes = media.categories.filter(category => category.vibe);
@@ -137,5 +213,6 @@ module.exports = {
   createCategory,
   getAllCategories,
   attachCategoriesToMedia,
-  organizeCategories
+  organizeCategories,
+  getHomepageCategoriesWithMedia
 }

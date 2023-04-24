@@ -4,7 +4,7 @@ const express = require("express");
 const categoriesRouter = express.Router();
 
 // function imports
-const { getAllCategories, createCategory } = require("../db/categories");
+const { getAllCategories, createCategory, getHomepageCategoriesWithMedia } = require("../db/categories");
 const { getAllCategoriesWithMedia } = require("../db/media");
 const { choosePosters } = require("../db/posters");
 const { requireUser } = require("./utils");
@@ -45,19 +45,20 @@ categoriesRouter.post("/", requireUser, async (req, res, next) => {
 
 
 /**
- ** GET /api/categories
- * Get and send back a list of all categories in the database with respective media included
+ ** GET /api/categories/homepage
+ * Get and send back a list of all homepage categories in the database with respective media included
 */
-categoriesRouter.get('/', async (req, res, next) => {
-  console.log("GETTING CATEGORIES CON MEDIA");
+categoriesRouter.get('/homepage', async (req, res, next) => {
   try {
-      const categories = await getAllCategoriesWithMedia();
+      const categories = await getHomepageCategoriesWithMedia();
 
       if ( categories ) {
-        categories.forEach((category) => {
+        categories.homepage.forEach((category) => {
           category.media.forEach((indivMedia) => choosePosters(indivMedia));
         })
-  
+        categories.special.forEach((category) => {
+          category.media.forEach((indivMedia) => choosePosters(indivMedia));
+        })
         res.send({ 
           success: true,
           categories: categories
