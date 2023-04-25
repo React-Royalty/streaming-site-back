@@ -402,7 +402,7 @@ async function createInitialPosters() {
       { mediaId: mediaHash["Everything Everywhere All at Once"].id, image: "https://i.imgur.com/WY08B89.png", featured: true },
       { mediaId: mediaHash["Everything Everywhere All at Once"].id, image: "https://i.imgur.com/Ok1j78C.jpg", featured: true },
       { mediaId: mediaHash["Everything Everywhere All at Once"].id, image: "https://i.imgur.com/n8jpHTg.png", titleLogo: true },
-      { mediaId: mediaHash["Parasite"].id, image: "https://i.imgur.com/o6Aqu5W.png", titleCard: true, wide: true },
+      { mediaId: mediaHash["Parasite"].id, image: "https://i.imgur.com/PZz8UQU.png", titleCard: true, wide: true },
       { mediaId: mediaHash["Parasite"].id, image: "https://i.imgur.com/0IQvYom.png", titleCard: true },
       { mediaId: mediaHash["Parasite"].id, image: "https://i.imgur.com/1b8hAch.png", featured: true },
       { mediaId: mediaHash["Parasite"].id, image: "https://i.imgur.com/lqVETP1.png", titleLogo: true },
